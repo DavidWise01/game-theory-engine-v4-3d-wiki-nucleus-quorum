@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>v4.3d Wiki Nucleus Quorum</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root{
+  color-scheme:dark;
+  --bg:#030611;
+  --panel:#0f172a;
+  --line:#2e3a55;
+  --text:#e5e7eb;
+  --muted:#9ca3af;
+  --core:#60a5fa;
+  --male:#5eead4;
+  --female:#f0abfc;
+  --judge:#fb923c;
+  --agent:#fef08a;
+  --green:#86efac;
+  --red:#fca5a5;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:
+    radial-gradient(circle at 50% 40%, rgba(96,165,250,.15), transparent 35%),
+    linear-gradient(180deg,#07101f,var(--bg));
+  color:var(--text);
+  font-family:system-ui,Segoe UI,sans-serif;
+  overflow:hidden;
+}
+header{
+  height:74px;
+  padding:14px 22px;
+  background:rgba(15,23,42,.92);
+  border-bottom:1px solid var(--line);
+}
+h1{margin:0;font-size:22px}
+.sub{color:var(--muted);font-size:13px}
+main{
+  height:calc(100vh - 74px);
+  display:grid;
+  grid-template-columns:300px minmax(520px,1fr) 340px;
+  gap:12px;
+  padding:12px;
+}
+section{
+  background:rgba(15,23,42,.88);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:14px;
+  min-height:0;
+  overflow:auto;
+}
+button{
+  width:100%;
+  padding:10px;
+  margin:5px 0;
+  background:#172033;
+  color:white;
+  border:1px solid var(--line);
+  border-radius:10px;
+  font-weight:800;
+  cursor:pointer;
+}
+button:hover{border-color:white}
+.stage{
+  position:relative;
+  width:100%;
+  height:100%;
+  min-height:620px;
+  border:1px solid var(--line);
+  border-radius:22px;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at center, rgba(255,255,255,.06), transparent 70%),
+    radial-gradient(circle at center, rgba(96,165,250,.12), transparent 38%);
+}
+.ring{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  pointer-events:none;
+}
+.solid0{width:160px;height:160px;border:3px solid var(--core);box-shadow:0 0 18px var(--core)}
+.solid1{width:300px;height:300px;border:3px solid var(--female);box-shadow:0 0 18px var(--female)}
+.solid2{width:450px;height:450px;border:3px solid var(--agent);box-shadow:0 0 18px var(--agent)}
+.dash0{width:230px;height:230px;border:3px dashed var(--male)}
+.dash1{width:370px;height:370px;border:3px dashed var(--female)}
+.dash2{width:540px;height:540px;border:3px dashed var(--agent)}
+.core{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  width:122px;
+  height:122px;
+  border-radius:50%;
+  background:#071121;
+  border:3px solid white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  z-index:12;
+  box-shadow:0 0 32px rgba(96,165,250,.9);
+  font-size:12px;
+  font-weight:900;
+  padding:10px;
+}
+.node{
+  position:absolute;
+  width:30px;
+  height:30px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  font-size:8px;
+  line-height:8px;
+  border:1px solid rgba(255,255,255,.35);
+  z-index:8;
+  cursor:pointer;
+}
+.node:hover{transform:scale(1.25);z-index:20}
+.male{background:rgba(94,234,212,.88);color:#021013}
+.female{background:rgba(240,171,252,.88);color:#16051f}
+.agent{background:rgba(254,240,138,.9);color:#1f1a06}
+.judge{
+  width:52px;
+  height:52px;
+  background:var(--judge);
+  color:#1f0902;
+  font-weight:900;
+  z-index:15;
+}
+.selected{outline:3px solid white;box-shadow:0 0 24px white}
+.chaser{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:12px;
+  height:12px;
+  border-radius:50%;
+  z-index:16;
+  box-shadow:0 0 18px currentColor,0 0 32px currentColor;
+}
+.ch0{color:var(--male);animation:o0 4s linear infinite}
+.ch1{color:var(--female);animation:o1 5.5s linear infinite reverse}
+.ch2{color:var(--agent);animation:o2 7s linear infinite}
+@keyframes o0{from{transform:rotate(0deg) translateX(115px)}to{transform:rotate(360deg) translateX(115px)}}
+@keyframes o1{from{transform:rotate(0deg) translateX(185px)}to{transform:rotate(360deg) translateX(185px)}}
+@keyframes o2{from{transform:rotate(0deg) translateX(270px)}to{transform:rotate(360deg) translateX(270px)}}
+pre{
+  background:#070914;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:10px;
+  max-height:42vh;
+  overflow:auto;
+  font-size:12px;
+}
+.badge{
+  display:inline-block;
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:4px 8px;
+  margin:3px;
+  color:var(--muted);
+}
+.barTrack{
+  height:9px;
+  background:#070914;
+  border:1px solid var(--line);
+  border-radius:999px;
+  overflow:hidden;
+  margin:8px 0 14px;
+}
+.bar{height:100%;background:linear-gradient(90deg,var(--red),var(--green));width:0%}
+@media(max-width:1050px){
+  body{overflow:auto}
+  main{height:auto;grid-template-columns:1fr}
+  .stage{height:680px}
+}
+</style>
+</head>
+<body>
+<header>
+<h1>v4.3d — Wiki Nucleus Quorum Engine</h1>
+<div class="sub">Random Wikipedia topic → nested nucleus courts → blind outside judge quorum.</div>
+</header>
+<main>
+<section>
+<h2>Controls</h2>
+<button onclick="fetchWiki()">Grab Random Wiki Topic</button>
+<button onclick="runCourts()">Run Courts</button>
+<button onclick="judgeQuorum()">Blind Judge Quorum</button>
+<button onclick="resetRun()">Reset</button>
+
+<h2>Layout</h2>
+<pre>Core 0:
+nucleus pair M/F inside core
+
+Ring 0.1:
+12 male / 12 female
+
+Judge A:
+outside, blind
+
+Core 1:
+solid ring around core 0
+same structure
+
+Ring 1.1:
+dashed spaced ring
+
+Core 2:
+final outer structure
+
+3 outside judges:
+blind quorum
+no inner identity labels</pre>
+</section>
+
+<section style="overflow:hidden">
+<div class="stage" id="stage">
+  <div class="ring solid2"></div>
+  <div class="ring dash2"></div>
+  <div class="ring solid1"></div>
+  <div class="ring dash1"></div>
+  <div class="ring solid0"></div>
+  <div class="ring dash0"></div>
+  <div class="chaser ch0"></div>
+  <div class="chaser ch1"></div>
+  <div class="chaser ch2"></div>
+  <div class="core" id="core">WIKI<br>TOPIC</div>
+</div>
+</section>
+
+<section>
+<h2>Topic</h2>
+<pre id="topicBox">No topic loaded.</pre>
+<h2>Quorum</h2>
+<div>
+<span class="badge">Judge A</span>
+<span class="badge">Judge B</span>
+<span class="badge">Judge C</span>
+</div>
+<pre id="resultBox"></pre>
+<h2>Utility</h2>
+<div>veracity</div><div class="barTrack"><div class="bar" id="veracityBar"></div></div>
+<div>controversy</div><div class="barTrack"><div class="bar" id="controversyBar"></div></div>
+<pre id="info"></pre>
+</section>
+</main>
+
+<script>
+let topic = null;
+let agents = [];
+let selected = null;
+let courtPackets = [];
+let judgeVotes = [];
+const stage = document.getElementById("stage");
+
+function addNode(obj, ringIndex, radius, angle, cls, label, sizeOverride=null){
+  const el = document.createElement("div");
+  el.className = "node " + cls + (obj.role === "Judge" ? " judge" : "");
+  const cx = stage.clientWidth / 2;
+  const cy = stage.clientHeight / 2;
+  const size = sizeOverride || (obj.role === "Judge" ? 52 : 30);
+  el.style.left = (cx + Math.cos(angle)*radius - size/2) + "px";
+  el.style.top = (cy + Math.sin(angle)*radius - size/2) + "px";
+  el.innerHTML = label;
+  el.onclick = () => { selected = obj; renderInfo(); };
+  stage.appendChild(el);
+  obj.el = el;
+}
+
+function buildLayout(){
+  document.querySelectorAll(".node").forEach(x=>x.remove());
+  agents = [];
+  const rings = [
+    {name:"Core0", inner:42, agentR:115, judgeR:150, phase:0},
+    {name:"Core1", inner:82, agentR:185, judgeR:225, phase:Math.PI/9},
+    {name:"Core2", inner:122, agentR:270, judgeR:310, phase:Math.PI/5}
+  ];
+
+  rings.forEach((ring, ri) => {
+    const pairM = {id:ring.name+"-PAIR-M", ring:ring.name, set:"nucleus", role:"Nucleus Pair", blind:"packet-only", gender:"M", vote:null};
+    const pairF = {id:ring.name+"-PAIR-F", ring:ring.name, set:"nucleus", role:"Nucleus Pair", blind:"packet-only", gender:"F", vote:null};
+    agents.push(pairM, pairF);
+    addNode(pairM, ri, ring.inner, ring.phase, "male", "M");
+    addNode(pairF, ri, ring.inner, ring.phase + Math.PI, "female", "F");
+
+    for(let i=0;i<12;i++){
+      const a = {id:`${ring.name}-M${String(i+1).padStart(2,"0")}`, ring:ring.name, set:"ring", role:"Agent", gender:"M", vote:null};
+      agents.push(a);
+      addNode(a, ri, ring.agentR, ring.phase + (i/24)*Math.PI*2, "male", "M");
+    }
+    for(let i=0;i<12;i++){
+      const a = {id:`${ring.name}-F${String(i+1).padStart(2,"0")}`, ring:ring.name, set:"ring", role:"Agent", gender:"F", vote:null};
+      agents.push(a);
+      addNode(a, ri, ring.agentR, ring.phase + ((i+12)/24)*Math.PI*2, "female", "F");
+    }
+
+    const judge = {id:`Judge-${String.fromCharCode(65+ri)}`, ring:ring.name, set:"outside", role:"Judge", blind:true, vote:null};
+    agents.push(judge);
+    addNode(judge, ri, ring.judgeR, ring.phase + Math.PI/2, "agent", "J<br>"+String.fromCharCode(65+ri));
+  });
+}
+
+async function fetchWiki(){
+  resetRun(false);
+  document.getElementById("topicBox").textContent = "Fetching random Wikipedia article...";
+  try{
+    const r = await fetch("https://en.wikipedia.org/api/rest_v1/page/random/summary");
+    const data = await r.json();
+    topic = {
+      title: data.title,
+      extract: data.extract || "",
+      url: data.content_urls && data.content_urls.desktop ? data.content_urls.desktop.page : ""
+    };
+  }catch(e){
+    topic = {
+      title: "Fallback Topic: Open-source artificial intelligence",
+      extract: "A local fallback topic was used because the browser blocked the live Wikipedia request.",
+      url: ""
+    };
+  }
+  document.getElementById("core").innerHTML = "WIKI<br>" + topic.title.slice(0,34);
+  document.getElementById("topicBox").textContent = JSON.stringify(topic,null,2);
+  renderInfo();
+}
+
+function scoreText(){
+  if(!topic) return {veracity:.5, controversy:.5, novelty:.5};
+  const text = (topic.title + " " + topic.extract).toLowerCase();
+  const controversyWords = ["war","politic","religion","ai","intelligence","law","rights","conflict","ethic","power","government","privacy","surveillance","weapon","climate"];
+  let controversy = controversyWords.reduce((n,w)=>n+(text.includes(w)?1:0),0) / 6;
+  controversy = Math.max(.15, Math.min(1, controversy));
+  const novelty = Math.min(1, Math.max(.2, topic.extract.length / 800));
+  const veracity = Math.max(.45, Math.min(.95, .75 - controversy*.12 + novelty*.18));
+  return {veracity, controversy, novelty};
+}
+
+function runCourts(){
+  if(!topic) fetchWiki().then(runCourts);
+  const s = scoreText();
+  courtPackets = [];
+  const rings = ["Core0","Core1","Core2"];
+  rings.forEach((ring, idx)=>{
+    const localAgents = agents.filter(a=>a.ring===ring && a.role !== "Judge");
+    let affirm=0, oppose=0, synthesize=0;
+    localAgents.forEach((a,i)=>{
+      const basis = (i + idx + Math.round(s.controversy*10)) % 3;
+      if(basis === 0) a.vote = "affirm";
+      else if(basis === 1) a.vote = "oppose";
+      else a.vote = "synthesize";
+
+      if(a.vote==="affirm") affirm++;
+      if(a.vote==="oppose") oppose++;
+      if(a.vote==="synthesize") synthesize++;
+    });
+
+    const packet = {
+      ring,
+      anonymous_packet: true,
+      counts: {affirm, oppose, synthesize},
+      veracity: Number(s.veracity.toFixed(3)),
+      controversy: Number(s.controversy.toFixed(3)),
+      novelty: Number(s.novelty.toFixed(3)),
+      packet_score: Number(((affirm*.3 + synthesize*.5 - oppose*.2)/localAgents.length + s.veracity).toFixed(3))
+    };
+    courtPackets.push(packet);
+  });
+
+  document.getElementById("veracityBar").style.width = (s.veracity*100)+"%";
+  document.getElementById("controversyBar").style.width = (s.controversy*100)+"%";
+  resultBox.textContent = "Courts ran. Packets anonymized for blind judges.";
+  renderInfo();
+}
+
+function judgeQuorum(){
+  if(courtPackets.length === 0) runCourts();
+  judgeVotes = [];
+  const judges = agents.filter(a=>a.role==="Judge");
+  judges.forEach((j,idx)=>{
+    const p = courtPackets[idx];
+    const maxSide = Object.keys(p.counts).sort((a,b)=>p.counts[b]-p.counts[a])[0];
+    let decision = maxSide;
+    if(p.veracity < .58 && p.controversy > .65) decision = "hold";
+    if(maxSide === "synthesize" && p.veracity >= .55) decision = "synthesize";
+    j.vote = decision;
+    judgeVotes.push({judge:j.id, blind:true, received_packet:p.ring, decision});
+  });
+
+  const counts = {};
+  judgeVotes.forEach(v=>counts[v.decision]=(counts[v.decision]||0)+1);
+  const final = Object.keys(counts).sort((a,b)=>counts[b]-counts[a])[0];
+
+  resultBox.textContent = JSON.stringify({
+    judge_votes: judgeVotes,
+    quorum_counts: counts,
+    final_decision: final,
+    blind_rule: "Judges receive anonymized packets only; they do not know inner agent identities."
+  }, null, 2);
+  renderInfo();
+}
+
+function resetRun(clearTopic=true){
+  courtPackets=[];
+  judgeVotes=[];
+  agents.forEach(a=>a.vote=null);
+  if(clearTopic){
+    topic=null;
+    document.getElementById("core").innerHTML = "WIKI<br>TOPIC";
+    document.getElementById("topicBox").textContent = "No topic loaded.";
+  }
+  document.getElementById("resultBox").textContent = "";
+  document.getElementById("veracityBar").style.width = "0%";
+  document.getElementById("controversyBar").style.width = "0%";
+  selected=null;
+  renderInfo();
+}
+
+function renderInfo(){
+  document.querySelectorAll(".node").forEach(x=>x.classList.remove("selected"));
+  if(selected && selected.el) selected.el.classList.add("selected");
+  info.textContent = JSON.stringify(selected || {
+    topic_loaded: !!topic,
+    agent_count: agents.length,
+    packets: courtPackets,
+    judge_votes: judgeVotes
+  }, null, 2);
+}
+
+window.addEventListener("resize", ()=>{
+  buildLayout();
+  renderInfo();
+});
+
+buildLayout();
+renderInfo();
+</script>
+</body>
+</html>
