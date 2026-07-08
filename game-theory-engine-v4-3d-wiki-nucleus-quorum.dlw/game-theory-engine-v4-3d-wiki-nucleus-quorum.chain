@@ -4,6 +4,6 @@ slug  : game-theory-engine-v4-3d-wiki-nucleus-quorum
 seal  : e685de76d2fcdecde5c78990ba35e70906f58ae334a29c6ac033b23df8d30fbf
 prev  : eb3b02f7d0b56c6fc61ec06db58adb72c51b91dbacf9542e3090e5756828261f
 link  : 1157129a500c270b05f483884a5b555a95fcc522d61935c38062f739d95b7d20
-head  : 3447d3a0533aaf1e29a8bdc67a9774884fb3ae9dbc8a17064b7a008ca3c4ec90
+head  : 13f9ace173ef2e60af38912ba329b4afcb5a38b84a0e4495e8d30327f8c99cc2
 
 — the tether: link = sha256(index|slug|seal|prev). the chain head commits to the whole corpus.
